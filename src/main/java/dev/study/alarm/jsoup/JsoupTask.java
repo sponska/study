@@ -1,6 +1,5 @@
 package dev.study.alarm.jsoup;
 
-import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import dev.study.alarm.utill.HttpUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -14,12 +13,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Component
@@ -41,8 +40,6 @@ public class JsoupTask {
 
     @Value("${spring.batch.job.names}")
     private String token;
-
-    private String authToken = "Bearer " + token;
 
     @Scheduled(cron = "0 0/1 * * * ?")
     private void task() throws IOException, JSONException {
@@ -77,10 +74,15 @@ public class JsoupTask {
         StringEntity stringEntity = new StringEntity(jsonMessage, "UTF-8");
         httpPost.setEntity(stringEntity);
 
+        String authToken = "Bearer " + token;
+
         httpPost.setHeader("Content-Type", "application/json");
         httpPost.setHeader("Authorization", authToken);
 
         System.out.println(token);
+        System.out.println(authToken);
+        System.out.println(httpPost);
+        System.out.println(Arrays.toString(httpPost.getAllHeaders()));
         System.out.println(jsonMessage);
 
         CloseableHttpResponse httpResponse = httpClient.execute(httpPost);

@@ -19,14 +19,11 @@ import org.apache.http.impl.client.HttpClientBuilder;
  */
 @Slf4j
 public class HttpUtil {
-
     public static CloseableHttpClient getHttpClient() {
-
         RequestConfig config = RequestConfig.custom()
                 .setConnectTimeout(5 * 1000)
                 .setConnectionRequestTimeout(5 * 1000)
                 .setSocketTimeout(5 * 1000).build();
         return HttpClientBuilder.create().setDefaultRequestConfig(config).build();
-
     }
 }
