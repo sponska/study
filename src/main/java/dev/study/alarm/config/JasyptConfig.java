@@ -27,13 +27,4 @@ public class JasyptConfig {
 
         return encryptor;
     }
-
-    public static void main(String[] args) {
-        JasyptConfig jasyptConfig = new JasyptConfig();
-        String encrypt = jasyptConfig.stringEncryptor()
-                .encrypt("xoxb-175823403904-939351495456-AxN1Fnwrd3nHFXPTCSyPAKNi");
-
-        System.out.println(encrypt);
-    }
-
 }
