@@ -5,6 +5,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -19,8 +22,6 @@ public class BoardLifeSiteDocument implements SiteDocument {
                       "&happy_board_search_fields%5B%5D=bbs_title" +
                       "&happy_board_keyword=%";
     String url = baseUrl + boardUrl;
-
-    String oldTitle;
 
     String keyword;
 
@@ -66,21 +67,23 @@ public class BoardLifeSiteDocument implements SiteDocument {
         String selectTopItemCssQuery = "td img[src=img/판매.png]";
         Element topItem = getTopItem(itemList, selectTopItemCssQuery);
 
-        return topItem.select("a[target=_self]").first();
+        return topItem.select("a[target=_self]")
+                .first();
     }
 
     @Override
-    public boolean isNewItem() throws IOException {
+    public boolean isNewItem(String oldTitle) throws IOException {
         String title = getTitle();
-        boolean isNew = !title.equals(oldTitle);
-        if(isNew){
-            oldTitle = title;
-        }
-        return isNew;
+        return !title.equals(oldTitle);
     }
 
     @Override
     public String getText() throws IOException {
         return getTitle() + " \n " + baseUrl + getLink();
+    }
+
+    @Override
+    public String getKeyword() {
+        return this.keyword;
     }
 }
