@@ -1,46 +1,60 @@
 package dev.study.alarm.site;
 
-import dev.study.alarm.document.SiteDocument;
-import dev.study.alarm.notifier.Notifier;
-import lombok.RequiredArgsConstructor;
-import org.codehaus.jettison.json.JSONException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import lombok.Getter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
-@Component
-@RequiredArgsConstructor
-public class BoardLife implements Site {
 
-    private final Notifier notifier;
-    private final JdbcTemplate jdbcTemplate;
+@Getter
+public class BoardLife extends Site {
 
-    public void notifyNewItem(SiteDocument siteDocument) throws IOException, JSONException {
-        String keyword = siteDocument.getKeyword();
-        String oldTitle = getOldTitle(keyword);
-        System.out.println(oldTitle);
-        System.out.println(siteDocument.isNewItem(oldTitle));
-        if (siteDocument.isNewItem(oldTitle)) {
-            String title = siteDocument.getTitle();
-            System.out.println(title);
-            updateTitle(title, keyword);
-            String text = siteDocument.getText();
-            notifier.notify(text);
-        }
+    String baseUrl = "http://boardlife.co.kr";
+    String boardUrl = "/bbs_list.php?tb=board_used&search_mode=ok&id=&game_id=" +
+                      "&happy_board_search_fields%5B%5D=bbs_name" +
+                      "&happy_board_search_fields%5B%5D=bbs_review" +
+                      "&happy_board_search_fields%5B%5D=bbs_title" +
+                      "&happy_board_keyword=%";
+    String url = baseUrl + boardUrl;
+
+    String keyword;
+
+    public BoardLife(String keyword) {
+        this.keyword = keyword;
     }
 
-    private void updateTitle(String title, String keyword) {
-        jdbcTemplate.update("UPDATE OLD_ITEM SET TITLE = ? WHERE KEYWORD = ?", title, keyword);
+    public String getUrl() throws UnsupportedEncodingException {
+        return url + URLEncoder.encode(keyword, "EUC-KR");
     }
 
-    private String getOldTitle(String keyword) {
-        System.out.println(keyword);
-        try {
-            return jdbcTemplate.queryForObject("SELECT TITLE FROM OLD_ITEM WHERE KEYWORD = ?", new String[]{keyword}, String.class);
-        } catch (Exception e) {
-            jdbcTemplate.update("INSERT INTO OLD_ITEM (KEYWORD,TITLE) VALUES(?,?)",keyword,"");
-            return null;
-        }
+    public Elements getItemList(Document document, String cssQuery) {
+        return document.select(cssQuery);
+    }
+
+    public String getTitle() throws IOException {
+        return getTopItemInfo().html()
+                .split("<")[0];
+    }
+
+    public String getLink() throws IOException {
+        return baseUrl + getTopItemInfo().attr("href")
+                .substring(1);
+    }
+
+    public Element getTopItemInfo() throws IOException {
+        Document document = getDocument();
+
+        String selectItemListCssQuery = "tr[onmouseover=this.style.backgroundColor='#ffffff']";
+        Elements itemList = getItemList(document, selectItemListCssQuery);
+
+        String selectTopItemCssQuery = "td img[src=img/판매.png]";
+        Element topItem = getTopItem(itemList, selectTopItemCssQuery);
+
+        return topItem.select("a[target=_self]")
+                .first();
     }
 }
