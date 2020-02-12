@@ -34,5 +34,4 @@ public class EguruTest {
         Assert.assertEquals("킹덤 631화", actual);
 
     }
-
 }

@@ -33,7 +33,7 @@ public class Eguru extends Site {
     }
 
     private ToIntFunction<Element> getElementToIntFunction() {
-        return o -> Integer.parseInt(o.text().replaceAll("[^0-9]",""));
+        return o -> Integer.parseInt(o.text().replaceAll("[^0-9]","").substring(0,3));
     }
 
     public String getTitle() throws IOException {
