@@ -1,4 +1,4 @@
-package dev.study.alarm.notifier;
+package dev.study.alarm.messenger;
 
 import com.google.common.base.Charsets;
 import lombok.AllArgsConstructor;

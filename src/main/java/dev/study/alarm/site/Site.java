@@ -14,6 +14,10 @@ public abstract class Site {
 
     private String keyword;
 
+    public String getKeyword() {
+        return keyword;
+    }
+
     public Document getDocument() throws IOException {
         Connection.Response response = Jsoup.connect(getUrl())
                 .method(Connection.Method.GET)
@@ -42,15 +46,11 @@ public abstract class Site {
         return document.select(cssQuery);
     }
 
+    abstract Element getTopItemInfo() throws IOException;
+
     public abstract String getTitle() throws IOException;
 
     abstract String getLink() throws IOException;
 
-    abstract Element getTopItemInfo() throws IOException;
-
-    abstract String getUrl() throws UnsupportedEncodingException;
-
-    public String getKeyword() {
-        return keyword;
-    }
+    abstract String getUrl();
 }

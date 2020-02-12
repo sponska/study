@@ -1,4 +1,4 @@
-package dev.study.alarm.notifier;
+package dev.study.alarm.messenger;
 
 import dev.study.alarm.utill.HttpUtil;
 import org.apache.http.HttpHeaders;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class Slack implements Notifier {
+public class Slack implements Messenger {
 
     private static final String SLACK_API_URL = "https://slack.com/api/chat.postMessage";
     public static final String TOKEN_PREFIX = "Bearer";
@@ -22,7 +22,7 @@ public class Slack implements Notifier {
     @Value("${slack.token}")
     private String token;
 
-    public void notify(String text) throws JSONException, IOException {
+    public void send(String text) throws JSONException, IOException {
         CloseableHttpClient httpClient = HttpUtil.getHttpClient();
         HttpPost httpPost = new HttpPost(SLACK_API_URL);
 

@@ -27,12 +27,17 @@ public class BoardLife extends Site {
         this.keyword = keyword;
     }
 
-    public String getUrl() throws UnsupportedEncodingException {
-        return url + URLEncoder.encode(keyword, "EUC-KR");
-    }
+    public Element getTopItemInfo() throws IOException {
+        Document document = getDocument();
 
-    public Elements getItemList(Document document, String cssQuery) {
-        return document.select(cssQuery);
+        String selectItemListCssQuery = "tr[onmouseover=this.style.backgroundColor='#ffffff']";
+        Elements itemList = getItemList(document, selectItemListCssQuery);
+
+        String selectTopItemCssQuery = "td img[src=img/판매.png]";
+        Element topItem = getTopItem(itemList, selectTopItemCssQuery);
+
+        return topItem.select("a[target=_self]")
+                .first();
     }
 
     public String getTitle() throws IOException {
@@ -45,16 +50,12 @@ public class BoardLife extends Site {
                 .substring(1);
     }
 
-    public Element getTopItemInfo() throws IOException {
-        Document document = getDocument();
-
-        String selectItemListCssQuery = "tr[onmouseover=this.style.backgroundColor='#ffffff']";
-        Elements itemList = getItemList(document, selectItemListCssQuery);
-
-        String selectTopItemCssQuery = "td img[src=img/판매.png]";
-        Element topItem = getTopItem(itemList, selectTopItemCssQuery);
-
-        return topItem.select("a[target=_self]")
-                .first();
+    public String getUrl() {
+        try {
+            return url + URLEncoder.encode(keyword, "EUC-KR");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return url + keyword;
+        }
     }
 }

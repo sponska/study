@@ -19,23 +19,6 @@ public class Eguru extends Site {
         this.keyword = keyword;
     }
 
-    public String getText() throws IOException {
-        return getTitle() + " \n " + getLink();
-    }
-
-    public String getTitle() throws IOException {
-        return getTopItemInfo().text();
-    }
-
-    public Elements getItemList(Document document, String cssQuery) {
-        return document.select(cssQuery);
-    }
-
-    public String getLink() throws IOException {
-        return baseUrl + getTopItemInfo().attr("href")
-                .substring(1);
-    }
-
     public Element getTopItemInfo() throws IOException {
         Document document = getDocument();
 
@@ -51,7 +34,15 @@ public class Eguru extends Site {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    @Override
+    public String getTitle() throws IOException {
+        return getTopItemInfo().text();
+    }
+
+    public String getLink() throws IOException {
+        return baseUrl + getTopItemInfo().attr("href")
+                .substring(1);
+    }
+
     String getUrl() {
         return this.baseUrl + this.keyword;
     }
