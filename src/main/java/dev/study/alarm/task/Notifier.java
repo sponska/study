@@ -1,9 +1,9 @@
 package dev.study.alarm.task;
 
+import dev.study.alarm.messenger.Messenger;
 import dev.study.alarm.site.BoardLife;
 import dev.study.alarm.site.Eguru;
 import dev.study.alarm.site.Site;
-import dev.study.alarm.messenger.Messenger;
 import dev.study.alarm.utill.JdbcUtil;
 import lombok.RequiredArgsConstructor;
 import org.codehaus.jettison.json.JSONException;
@@ -24,7 +24,11 @@ public class Notifier {
     @Scheduled(cron = "0 0/1 * * * ?")
     private void task() throws IOException, JSONException {
         List<Site> sites = Arrays.asList(new Eguru("kingdom")
-                , new BoardLife("크레이지 타임"));
+                ,new Eguru("one-punch-man-re")
+                ,new Eguru("berserk")
+                ,new Eguru("헌터-헌터")
+                ,new BoardLife("크레이지 타임")
+        );
 
         for (Site site : sites) {
             notifyNewItem(site);

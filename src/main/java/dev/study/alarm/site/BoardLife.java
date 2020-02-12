@@ -20,7 +20,6 @@ public class BoardLife extends Site {
                       "&happy_board_search_fields%5B%5D=bbs_title" +
                       "&happy_board_keyword=%";
     String url = baseUrl + boardUrl;
-
     String keyword;
 
     public BoardLife(String keyword) {

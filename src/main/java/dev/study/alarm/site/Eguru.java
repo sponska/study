@@ -7,12 +7,12 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.function.ToIntFunction;
 
 @Getter
 public class Eguru extends Site {
 
     String baseUrl = "https://eguru.tumblr.com/";
-
     String keyword;
 
     public Eguru(String keyword) {
@@ -28,10 +28,12 @@ public class Eguru extends Site {
         return itemList.stream()
                 .filter(element -> element.text()
                         .contains("화"))
-                .max(Comparator.comparingInt(o -> Integer.parseInt(o.text()
-                        .substring(3, o.text()
-                                              .length() - 1))))
+                .max(Comparator.comparingInt(getElementToIntFunction()))
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private ToIntFunction<Element> getElementToIntFunction() {
+        return o -> Integer.parseInt(o.text().replaceAll("[^0-9]",""));
     }
 
     public String getTitle() throws IOException {
