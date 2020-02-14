@@ -12,7 +12,7 @@ import java.util.function.ToIntFunction;
 @Getter
 public class Eguru extends Site {
 
-    String baseUrl = "https://eguru.tumblr.com/";
+    public String baseUrl = "https://eguru.tumblr.com";
     String keyword;
 
     public Eguru(String keyword) {
@@ -38,11 +38,6 @@ public class Eguru extends Site {
 
     public String getTitle() throws IOException {
         return getTopItemInfo().text();
-    }
-
-    public String getLink() throws IOException {
-        return baseUrl + getTopItemInfo().attr("href")
-                .substring(1);
     }
 
     String getUrl() {

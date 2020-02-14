@@ -1,6 +1,7 @@
 package dev.study.alarm.site;
 
 
+import lombok.Getter;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,11 +9,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
+@Getter
 public abstract class Site {
 
+    private static final String SLASH = "/";
     private String keyword;
+    public String baseUrl;
 
     public String getKeyword() {
         return keyword;
@@ -42,6 +45,11 @@ public abstract class Site {
                 .orElseThrow(IllegalArgumentException::new);
     }
 
+    public String getLink() throws IOException {
+        return getBaseUrl() + SLASH + getTopItemInfo().attr("href")
+                .substring(1);
+    }
+
     public Elements getItemList(Document document, String cssQuery) {
         return document.select(cssQuery);
     }
@@ -49,8 +57,6 @@ public abstract class Site {
     abstract Element getTopItemInfo() throws IOException;
 
     public abstract String getTitle() throws IOException;
-
-    abstract String getLink() throws IOException;
 
     abstract String getUrl();
 }
