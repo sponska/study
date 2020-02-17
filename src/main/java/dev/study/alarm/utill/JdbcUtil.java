@@ -10,7 +10,7 @@ public class JdbcUtil {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void updateTitle(String title, String keyword) {
+    public void updateTitle(String keyword, String title) {
         jdbcTemplate.update("UPDATE OLD_ITEM SET TITLE = ? WHERE KEYWORD = ?", title, keyword);
     }
 
