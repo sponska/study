@@ -1,19 +1,19 @@
 package dev.study.alarm.site.boardLife;
 
-import dev.study.alarm.messenger.Messenger;
 import dev.study.alarm.site.Site;
-import dev.study.alarm.utill.JdbcUtil;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
-import java.util.List;
 
+public abstract class BoardLife extends Site {
 
-public class BoardLife extends Site {
-
-    private BoardLife(Messenger messenger, JdbcUtil jdbcUtil, List<BoardLifeSelector> selectors) {
-        super(messenger, jdbcUtil, selectors);
+    public String getBaseUrl(){
+        return "http://boardlife.co.kr";
     }
 
-    public static BoardLife of(Messenger messenger, JdbcUtil jdbcUtil, List<BoardLifeSelector> selectors) {
-        return new BoardLife(messenger, jdbcUtil, selectors);
-    }
+    public abstract String getLink(Element element);
+    public abstract String getTitle(Element element);
+    public abstract Element getTopElement(Document document);
+    public abstract String getUrl();
+
 }

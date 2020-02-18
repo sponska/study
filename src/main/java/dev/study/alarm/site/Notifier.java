@@ -1,6 +1,8 @@
-package dev.study.alarm.task;
+package dev.study.alarm.site;
 
 import dev.study.alarm.messenger.Messenger;
+import dev.study.alarm.site.Selector;
+import dev.study.alarm.site.TopItem;
 import dev.study.alarm.site.eguru.Comic;
 import dev.study.alarm.site.boardLife.UsedBoard;
 import dev.study.alarm.site.boardLife.BoardLife;
@@ -27,13 +29,21 @@ public class Notifier {
     @Scheduled(cron = "0 0/5 * * * ?")
     private void task() throws IOException, JSONException {
 
-        List<Site> sites = Arrays.asList(
-                BoardLife.of(messenger, jdbcUtil, Collections.singletonList(new UsedBoard("크레이지 타임")))
-                , Eguru.of(messenger, jdbcUtil, Arrays.asList(new Comic("kingdom"), new Comic("one-punch-man-re")))
-        );
 
+        List<Site> sites = Arrays.asList(new UsedBoard("크레이지 타임"));
         for (Site site : sites) {
-            site.notifyNewItem();
+            notifyNewItem(site);
         }
+    }
+
+    public void notifyNewItem(Site site) throws IOException, JSONException {
+            String keyword = site.getKeyword();
+            TopItem topItem = site.getTopItem();
+
+            String title = topItem.getTitle();
+            if (!jdbcUtil.getOldTitle(keyword).equals(title)) {
+                messenger.send(topItem.getText());
+                jdbcUtil.updateTitle(keyword, title);
+            }
     }
 }
