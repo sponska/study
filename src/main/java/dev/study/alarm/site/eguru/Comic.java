@@ -3,33 +3,38 @@ package dev.study.alarm.site.eguru;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
-public class Comic extends EguruSelector {
+public class Comic extends Eguru {
 
     private static final String SLASH = "/";
 
+    String keyword;
+
     public Comic(String keyword) {
-        super(keyword);
+        this.keyword = keyword;
     }
 
     @Override
-    public Element getTopElement(Document document) throws IOException {
-        return document.select("a[target=_blank]").stream().filter(element -> element.text()
-                .contains("화"))
+    public Element getTopElement(Document document) {
+        return document.select("a[target=_blank]")
+                .stream()
+                .filter(element -> element.text()
+                        .contains("화"))
                 .max(Comparator.comparingInt(getElementToIntFunction()))
                 .orElseThrow(IllegalArgumentException::new);
     }
 
     private ToIntFunction<Element> getElementToIntFunction() {
-        return element -> Integer.parseInt(element.text().replaceAll("[^0-9]","").substring(0,3));
+        return element -> Integer.parseInt(element.text()
+                .replaceAll("[^0-9]", "")
+                .substring(0, 3));
     }
 
     @Override
     public String getLink(Element element) {
-       return baseUrl + SLASH + element.attr("href")
+        return getBaseUrl() + SLASH + element.attr("href")
                 .substring(1);
     }
 
@@ -40,6 +45,6 @@ public class Comic extends EguruSelector {
 
     @Override
     public String getUrl() {
-        return baseUrl + SLASH + getKeyword();
+        return getBaseUrl() + SLASH + keyword;
     }
 }

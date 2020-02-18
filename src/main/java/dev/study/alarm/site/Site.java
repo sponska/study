@@ -12,10 +12,6 @@ public abstract class Site {
 
     String keyword;
 
-    public String getKeyword(){
-        return this.keyword;
-    }
-
     public Document getDocument() throws IOException {
         Connection.Response response = Jsoup.connect(getUrl())
                 .method(Connection.Method.GET)
@@ -27,11 +23,14 @@ public abstract class Site {
         Element topElement = getTopElement(getDocument());
         String title = getTitle(topElement);
         String link = getLink(topElement);
-        return new TopItem(title, link);
+        return new TopItem(title, link ,keyword);
     }
 
     abstract String getLink(Element element);
+
     abstract String getTitle(Element element);
+
     abstract Element getTopElement(Document document) throws IOException;
+
     abstract String getUrl();
 }
